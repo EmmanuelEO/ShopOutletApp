@@ -1,0 +1,23 @@
+{
+  "name": "shopoutlet",
+  "version": "1.0.0",
+  "description": "MERN SHOPOUTLET e-commerce app",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "author": "Emmanuel Okonkwo",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "concurrently": "^6.5.1",
+    "nodemon": "^2.0.15"
+  }
+}
