@@ -13,22 +13,23 @@ connectDB()
 
 const app = express()
 
-app.use(express.json)
+// This is added to read the data stored in req.body
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send('API is running....')
 })
 
 app.use('/api/products', productRoutes)
-
 app.use('/api/users', userRoutes)
+
 
 app.use(notFound)
 
 // Handling errors that are not directly casted to be object IDs
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 1000
+const PORT = process.env.PORT || 8080
 
 app.listen(
   PORT,
