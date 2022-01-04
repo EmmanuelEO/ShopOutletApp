@@ -14,9 +14,10 @@ import Rating from '../components/Rating'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { listProductDetails } from '../actions/productActions'
+import { addToCart } from '../actions/cartActions'
 
 const ProductScreen = () => {
-  const [quantity, setQuantity] = useState(0)
+  const [quantity, setQuantity] = useState(1)
   const params = useParams()
   const dispatch = useDispatch()
   const productDetails = useSelector(state => state.productDetails)
@@ -28,7 +29,8 @@ const ProductScreen = () => {
   }, [dispatch, params])
 
   const addToCartHandler = () => {
-    navigate(`/cart/${params.id}?quantity=${quantity}`)
+    dispatch(addToCart(product._id, quantity))
+    navigate(`/cart/`)
   }
 
   return (
