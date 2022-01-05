@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
+import { Form, Button, Row, Col, Table } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import { ListMyOrders } from '../actions/orderActions'
+import { LinkContainer } from 'react-router-bootstrap'
 
 // useState should be geenrally used whenever there is a form field that we might need to fill in and input
 const ProfileScreen = () => {
@@ -16,6 +18,7 @@ const ProfileScreen = () => {
   const [count, setCount] = useState(1)
 
   const dispatch = useDispatch()
+
   const userDetails = useSelector((state) => state.userDetails)
   const { loading, error, user } = userDetails
 
@@ -26,6 +29,10 @@ const ProfileScreen = () => {
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile)
   const { success } = userUpdateProfile
 
+  const myOrders = useSelector((state) => state.myOrders)
+  // loading: loadingOrders and errorOrders renames loading to loadingOrders and error to errorOrders
+  const { loading: loadingOrders, error: errorOrders, orders } = myOrders
+
   useEffect(() => {
     // If the user is not logged in navigate to login
     if (!userInfo) {
@@ -33,9 +40,10 @@ const ProfileScreen = () => {
     } else {
       if (!user.name) {
         dispatch(getUserDetails('profile'))
+        dispatch(ListMyOrders())
       } else {
         // The count variable is used to keep track of the changes to the name and email parameters of the user field
-        console.log("count");
+        console.log('count')
         if (count === 1) {
           setName(user.name)
           setEmail(user.email)
@@ -67,13 +75,11 @@ const ProfileScreen = () => {
 
   return (
     <Row>
-      <Col md={3}>
-        <h1>User Profile</h1>
+      <Col md={3} lg={3}>
+        <h2>User Profile</h2>
         {message && <Message variant='danger'>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
-        {success && (
-          <Message variant='success'>Profile Updated</Message>
-        )}
+        {success && <Message variant='success'>Profile Updated</Message>}
         {loading && <Loader />}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId='name' id='fg-1'>
@@ -123,8 +129,70 @@ const ProfileScreen = () => {
           </Button>
         </Form>
       </Col>
-      <Col md={9}>
+      <Col md={9} lg={9}>
         <h2>My Orders</h2>
+        {loadingOrders ? (
+          <Loader />
+        ) : errorOrders ? (
+          <Message variant='danger'>{errorOrders}</Message>
+        ) : (
+          <Table striped bordered hover responsive className='table-sm'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>DATE</th>
+                <th>TOTAL</th>
+                <th md={3}>PAID</th>
+                <th>DELIVERED</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>{order.totalPrice}</td>
+                  <td className='pl-2'>
+                    {order.isPaid ? (
+                      <Row>
+                        <Col>
+                          <span>
+                            <i className='fas fa-check' id='icon-2'></i>
+                          </span>
+                          <span> Date: {order.paidAt.substring(0, 10)}</span>
+                        </Col>
+                      </Row>
+                    ) : (
+                      <i className='fas fa-times' id='icon-1'></i>
+                    )}
+                  </td>
+                  <td>
+                    {order.isDelivered ? (
+                      <Row>
+                        <Col>
+                          <span>
+                            <i className='fas fa-check' id='icon-2'></i>
+                          </span>
+                          <span> Date: {order.deliveredAt.substring(0, 10)}</span>
+                        </Col>
+                      </Row>
+                    ) : (
+                      <i className='fas fa-times' id='icon-1'></i>
+                    )}
+                  </td>
+                  <td>
+                    <LinkContainer to={`/order/${order._id}`}>
+                      <Button className='btn-sm' variant='light'>
+                        Details
+                      </Button>
+                    </LinkContainer>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </Col>
     </Row>
   )

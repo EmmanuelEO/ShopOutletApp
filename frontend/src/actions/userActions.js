@@ -1,5 +1,21 @@
-import { LOGIN_FAIL, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT, REGISTER_FAIL, REGISTER_REQUEST, REGISTER_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_UPDATE_PROFILE_FAIL, USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS } from '../constants/userConstants'
 import axios from 'axios'
+import {
+  LOGIN_FAIL,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGOUT,
+  REGISTER_FAIL,
+  REGISTER_REQUEST,
+  REGISTER_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+} from '../constants/userConstants'
+import { MY_ORDERS_RESET } from '../constants/orderConstants'
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -36,9 +52,11 @@ export const login = (email, password) => async (dispatch) => {
   }
 }
 
-export const logout = () => dispatch => {
+export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo')
-  dispatch({ type: LOGOUT });
+  dispatch({ type: LOGOUT })
+  dispatch({ type: USER_DETAILS_RESET })
+  dispatch({ type: MY_ORDERS_RESET })
 }
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -88,19 +106,18 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       type: USER_DETAILS_REQUEST,
     })
 
-    const { userLogin: { userInfo } } = getState();
+    const {
+      userLogin: { userInfo },
+    } = getState()
 
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`
+        Authorization: `Bearer ${userInfo.token}`,
       },
     }
 
-    const { data } = await axios.get(
-      `/api/users/${id}`,
-      config
-    )
+    const { data } = await axios.get(`/api/users/${id}`, config)
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
@@ -123,20 +140,18 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
       type: USER_UPDATE_PROFILE_REQUEST,
     })
 
-    const { userLogin: { userInfo } } = getState();
+    const {
+      userLogin: { userInfo },
+    } = getState()
 
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.token}`
+        Authorization: `Bearer ${userInfo.token}`,
       },
     }
 
-    const { data } = await axios.put(
-      `/api/users/profile`,
-      user,
-      config
-    )
+    const { data } = await axios.put(`/api/users/profile`, user, config)
 
     dispatch({
       type: USER_UPDATE_PROFILE_SUCCESS,
