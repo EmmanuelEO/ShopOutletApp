@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -13,21 +13,26 @@ import {
 } from 'react-bootstrap'
 import Message from '../components/Message'
 import { addToCart, removeFromCart } from '../actions/cartActions'
+import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 const CartScreen = () => {
   const dispatch = useDispatch()
 
-  const cart = useSelector(state => state.cart)
+  const cart = useSelector((state) => state.cart)
   const { cartItems } = cart
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id))
   }
 
   const checkoutHandler = () => {
-      navigate('/login?redirect=shipping')
+    navigate('/login?redirect=shipping')
   }
+
+  useEffect(() => {
+    dispatch({ type: ORDER_CREATE_RESET })
+  })
 
   return (
     <Row>
@@ -82,7 +87,7 @@ const CartScreen = () => {
           </ListGroup>
         )}
       </Col>
-      <Col md={4} id="col-4">
+      <Col md={4} id='col-4'>
         <Card>
           <ListGroup variant='flush'>
             <ListGroup.Item>
