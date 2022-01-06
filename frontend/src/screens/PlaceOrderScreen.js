@@ -13,35 +13,50 @@ const PlaceOrderScreen = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
   // Calculate Prices
-  cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  cart.itemsPrice = cart.cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  )
 
   cart.shippingPrice = (cart.itemsPrice > 200 ? 0 : 50).toFixed(2)
 
   cart.taxPrice = (0.15 * Number(cart.itemsPrice)).toFixed(2)
 
-  cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
+  cart.totalPrice = (
+    Number(cart.itemsPrice) +
+    Number(cart.shippingPrice) +
+    Number(cart.taxPrice)
+  ).toFixed(2)
 
-  const orderCreate = useSelector(state => state.orderCreate) 
+  const orderCreate = useSelector((state) => state.orderCreate)
   const { order, success, error } = orderCreate
 
   useEffect(() => {
-      if(success) {
-          navigate(`/order/${order._id}`)
-      }
-      // eslint-disable-next-line
+    if (!userInfo) {
+      navigate('/login')
+    }
+    if (success) {
+      navigate(`/order/${order._id}`)
+    }
+    // eslint-disable-next-line
   }, [navigate, success])
 
   const placeOrderHandler = () => {
-      dispatch(createOrder({
-          orderItems: cart.cartItems, 
-          shippingAddress: cart.shippingAddress,
-          paymentMethod: cart.paymentMethod,
-          itemsPrice: cart.itemsPrice,
-          shippingPrice: cart.shippingPrice,
-          taxPrice: cart.taxPrice,
-          totalPrice: cart.totalPrice,
-      }))
+    dispatch(
+      createOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+      })
+    )
   }
 
   return (
@@ -131,10 +146,17 @@ const PlaceOrderScreen = () => {
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
-                    {error && <Message variant='danger'>{error}</Message>}
+                {error && <Message variant='danger'>{error}</Message>}
               </ListGroup.Item>
               <ListGroup.Item>
-                <Button type='button' className='btn-block' disabled={cart.cartItems.length === 0} onClick={placeOrderHandler}>Place Order</Button>
+                <Button
+                  type='button'
+                  className='btn-block'
+                  disabled={cart.cartItems.length === 0}
+                  onClick={placeOrderHandler}
+                >
+                  Place Order
+                </Button>
               </ListGroup.Item>
             </ListGroup>
           </Card>

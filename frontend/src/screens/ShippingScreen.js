@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,13 +10,16 @@ const ShippingScreen = () => {
   const cart = useSelector((state) => state.cart)
   const { shippingAddress } = cart
 
-  const [address, setAddress] = useState(shippingAddress.address)
-  const [city, setCity] = useState(shippingAddress.city)
-  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode)
-  const [country, setCountry] = useState(shippingAddress.country)
+  const [address, setAddress] = useState(shippingAddress.address ? shippingAddress.address : '')
+  const [city, setCity] = useState(shippingAddress.city ? shippingAddress.city : '')
+  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode ? shippingAddress.postalCode : '')
+  const [country, setCountry] = useState(shippingAddress.country ? shippingAddress.country : '')
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const userLogin = useSelector(state => state.userLogin)
+  const { userInfo } = userLogin
 
   const submitHandler = (e) => {
     // Note: that e.preventDefault() should always be called when using a form in react
@@ -24,6 +27,12 @@ const ShippingScreen = () => {
     dispatch(saveShippingAddress({ address, city, postalCode, country }))
     navigate('/payment')
   }
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/login')
+    }
+  }, [navigate, userInfo])
 
   return (
     <FormContainer>

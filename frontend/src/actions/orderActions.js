@@ -12,6 +12,12 @@ import {
   MY_ORDERS_REQUEST,
   MY_ORDERS_SUCCESS,
   MY_ORDERS_FAIL,
+  LIST_ALL_ORDERS_REQUEST,
+  LIST_ALL_ORDERS_SUCCESS,
+  LIST_ALL_ORDERS_FAIL,
+  DELIEVERED_ORDERS_FAIL,
+  DELIEVERED_ORDERS_SUCCESS,
+  DELIEVERED_ORDERS_REQUEST,
 } from '../constants/orderConstants'
 
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -120,6 +126,44 @@ export const payOrder =
     }
   }
 
+export const deliveredOrder =
+  (order) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: DELIEVERED_ORDERS_REQUEST,
+      })
+
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.put(
+        `/api/orders/${order._id}/delivered`,
+        {},
+        config
+      )
+
+      dispatch({
+        type: DELIEVERED_ORDERS_SUCCESS,
+        payload: data,
+      })
+    } catch (error) {
+      dispatch({
+        type: DELIEVERED_ORDERS_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      })
+    }
+  }
+
 export const ListMyOrders = () => async (dispatch, getState) => {
   try {
     dispatch({
@@ -147,6 +191,39 @@ export const ListMyOrders = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: MY_ORDERS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
+
+export const ListAllTheOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: LIST_ALL_ORDERS_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.get(`/api/orders`, config)
+
+    dispatch({
+      type: LIST_ALL_ORDERS_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: LIST_ALL_ORDERS_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

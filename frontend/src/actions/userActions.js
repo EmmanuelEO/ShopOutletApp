@@ -26,6 +26,7 @@ import {
   UPDATE_USER_FAIL,
 } from '../constants/userConstants'
 import { MY_ORDERS_RESET } from '../constants/orderConstants'
+import { CART_RESET_SHIPPING_ADDRESS } from '../constants/cartConstants'
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -62,12 +63,14 @@ export const login = (email, password) => async (dispatch) => {
   }
 }
 
-export const logout = () => (dispatch) => {
+export const logout = () => (dispatch, getState) => {
   localStorage.removeItem('userInfo')
   dispatch({ type: LOGOUT })
   dispatch({ type: USER_DETAILS_RESET })
   dispatch({ type: MY_ORDERS_RESET })
   dispatch({ type: LIST_USERS_RESET })
+  dispatch({ type: CART_RESET_SHIPPING_ADDRESS })
+  localStorage.setItem('shippingAddress', JSON.stringify(getState().cart.shippingAddress))
 }
 
 export const register = (name, email, password) => async (dispatch) => {

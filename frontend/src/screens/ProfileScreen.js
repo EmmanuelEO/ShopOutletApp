@@ -155,10 +155,10 @@ const ProfileScreen = () => {
                     {order.isPaid ? (
                       <Row>
                         <Col>
-                          <span>
+                          <p>
                             <i className='fas fa-check' id='icon-2'></i>
-                          </span>
-                          <span> Date: {order.paidAt.substring(0, 10)}</span>
+                          </p>
+                          <p className='text-nowrap'>Paid On: {order.paidAt.substring(0, 10)}</p>
                         </Col>
                       </Row>
                     ) : (
@@ -169,10 +169,10 @@ const ProfileScreen = () => {
                     {order.isDelivered ? (
                       <Row>
                         <Col>
-                          <span>
+                          <p>
                             <i className='fas fa-check' id='icon-2'></i>
-                          </span>
-                          <span> Date: {order.deliveredAt.substring(0, 10)}</span>
+                          </p>
+                          <p className='text-nowrap'>Delivered On: {order.deliveredAt.substring(0, 10)}</p>
                         </Col>
                       </Row>
                     ) : (

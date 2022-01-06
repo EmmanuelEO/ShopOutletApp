@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Form, Button, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,12 +19,21 @@ const PaymentScreen = () => {
 
   const dispatch = useDispatch()
 
+  const userLogin = useSelector(state => state.userLogin)
+  const { userInfo } = userLogin
+
   const submitHandler = (e) => {
     // Note: that e.preventDefault() should always be called when using a form in react
     e.preventDefault()
     dispatch(savePaymentMethod(paymentMetod))
     navigate('/placeorder')
   }
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/login')
+    }
+  }, [navigate, userInfo])
 
   return (
     <FormContainer>

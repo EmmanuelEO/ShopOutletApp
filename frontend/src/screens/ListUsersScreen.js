@@ -29,7 +29,7 @@ const ListUsersScreen = () => {
   }, [dispatch, userInfo, navigate, successfulDelete])
 
   const deleteHandler = (id, name) => {
-    if (window.confirm(`Are your sure you want to delete ${name} as a user?`)) {
+    if (window.confirm(`Are your sure you want to delete ${name} from the list of the users?`)) {
       dispatch(deleteOneUser(id))
     }
   }
