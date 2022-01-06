@@ -6,7 +6,7 @@ import { logout } from '../actions/userActions'
 
 const Header = () => {
   const dispatch = useDispatch()
-  const userLogin = useSelector(state => state.userLogin)
+  const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
   const logoutHandler = () => {
@@ -28,7 +28,7 @@ const Header = () => {
                   <i className='fas fa-shopping-cart'></i>Cart
                 </Nav.Link>
               </LinkContainer>
-              { userInfo ? (
+              {userInfo ? (
                 <NavDropdown title={userInfo.name} id='username'>
                   <LinkContainer to='/profile'>
                     <NavDropdown.Item>Profile</NavDropdown.Item>
@@ -37,11 +37,26 @@ const Header = () => {
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>
-              ) : (<LinkContainer to='/login'>
-              <Nav.Link>
-                <i className='fas fa-user'></i>Sign In
-              </Nav.Link>
-            </LinkContainer>)}
+              ) : (
+                <LinkContainer to='/login'>
+                  <Nav.Link>
+                    <i className='fas fa-user'></i>Sign In
+                  </Nav.Link>
+                </LinkContainer>
+              )}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title='Admin' id='adminmenu'>
+                  <LinkContainer to='/admin/allusers'>
+                    <NavDropdown.Item>Users</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/admin/allproducts'>
+                    <NavDropdown.Item>Products</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/admin/allorders'>
+                    <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

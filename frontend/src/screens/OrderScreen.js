@@ -35,27 +35,27 @@ const OrderScreen = () => {
 
   useEffect(() => {
     const addPayPalScript = async () => {
-        const { data: clientId } = await axios.get('/api/config/paypal')
-        const script = document.createElement('script')
-        script.type = 'text/javascript'
-        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
-        script.async = true
-        script.onload = () => {
-            setSdkReady(true)
-        }
-        document.body.appendChild(script)
+      const { data: clientId } = await axios.get('/api/config/paypal')
+      const script = document.createElement('script')
+      script.type = 'text/javascript'
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
+      script.async = true
+      script.onload = () => {
+        setSdkReady(true)
+      }
+      document.body.appendChild(script)
     }
 
     // This condition would check for if an order exists and whether the orderID matches the ID already in the URL
     if (!order || order._id !== orderID || successPay) {
-        dispatch({ type: ORDER_PAY_RESET })
+      dispatch({ type: ORDER_PAY_RESET })
       dispatch(getOrderDetails(orderID))
     } else if (!order.isPaid) {
-        if(!window.paypal) {
-            addPayPalScript()
-        } else {
-            setSdkReady(true)
-        }
+      if (!window.paypal) {
+        addPayPalScript()
+      } else {
+        setSdkReady(true)
+      }
     }
   }, [dispatch, orderID, order, successPay])
 
@@ -176,12 +176,18 @@ const OrderScreen = () => {
                 </Row>
               </ListGroup.Item>
               {!order.isPaid && (
-              <ListGroup.Item>
+                <ListGroup.Item>
                   {loadingPay && <Loader />}
-                  {!sdkReady ? <Loader /> : (
-                      <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
+                  {!sdkReady ? (
+                    <Loader />
+                  ) : (
+                    <PayPalButton
+                      amount={order.totalPrice}
+                      onSuccess={successPaymentHandler}
+                    />
                   )}
-              </ListGroup.Item>)}
+                </ListGroup.Item>
+              )}
             </ListGroup>
           </Card>
         </Col>

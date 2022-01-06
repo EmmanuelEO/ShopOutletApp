@@ -42,8 +42,6 @@ const ProfileScreen = () => {
         dispatch(getUserDetails('profile'))
         dispatch(ListMyOrders())
       } else {
-        // The count variable is used to keep track of the changes to the name and email parameters of the user field
-        console.log('count')
         if (count === 1) {
           setName(user.name)
           setEmail(user.email)

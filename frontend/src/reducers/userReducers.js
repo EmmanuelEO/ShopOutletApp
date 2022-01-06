@@ -1,4 +1,11 @@
 import {
+  DELETE_USER_FAIL,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  LIST_USERS_FAIL,
+  LIST_USERS_REQUEST,
+  LIST_USERS_RESET,
+  LIST_USERS_SUCCESS,
   LOGIN_FAIL,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -6,6 +13,10 @@ import {
   REGISTER_FAIL,
   REGISTER_REQUEST,
   REGISTER_SUCCESS,
+  UPDATE_USER_FAIL,
+  UPDATE_USER_REQUEST,
+  UPDATE_USER_RESET,
+  UPDATE_USER_SUCCESS,
   USER_DETAILS_FAIL,
   USER_DETAILS_REQUEST,
   USER_DETAILS_RESET,
@@ -66,6 +77,49 @@ export const userUpdateProfileReducer = (state = { }, action) => {
       return { loading: false, success: true, user: action.payload }
     case USER_UPDATE_PROFILE_FAIL:
       return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const listUsersReducer = (state = { users: [] }, action) => {
+  switch (action.type) {
+    case LIST_USERS_REQUEST:
+      return { loading: true }
+    case LIST_USERS_SUCCESS:
+      return { loading: false, users: action.payload }
+    case LIST_USERS_FAIL:
+      return { loading: false, error: action.payload }
+    case LIST_USERS_RESET:
+      return { users: [] }
+    default:
+      return state
+  }
+}
+
+export const deleteUserReducer = (state = { }, action) => {
+  switch (action.type) {
+    case DELETE_USER_REQUEST:
+      return { loading: true }
+    case DELETE_USER_SUCCESS:
+      return { loading: false, success: true }
+    case DELETE_USER_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}
+
+export const updateUserReducer = (state = { user: {} }, action) => {
+  switch (action.type) {
+    case UPDATE_USER_REQUEST:
+      return { loading: true }
+    case UPDATE_USER_SUCCESS:
+      return { loading: false, success: true }
+    case UPDATE_USER_FAIL:
+      return { loading: false, error: action.payload }
+    case UPDATE_USER_RESET:
+      return { user: {} }
     default:
       return state
   }
