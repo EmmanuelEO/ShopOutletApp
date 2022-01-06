@@ -25,7 +25,6 @@ h1 {
 }
 
 #text{
-  padding-left: 5%;
 }
 
 .selectForm{
@@ -54,6 +53,12 @@ h1 {
 
 #icon-2{
   color: green;
+}
+
+.btn-primary-outline {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 
