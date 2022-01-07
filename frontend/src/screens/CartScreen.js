@@ -11,7 +11,7 @@ import {
   Card,
 } from 'react-bootstrap'
 import Message from '../components/Message'
-import { addToCart, removeFromCart } from '../actions/cartActions'
+import { addToCart, removeFromCart, replaceInCart } from '../actions/cartActions'
 import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 const CartScreen = () => {
@@ -59,10 +59,11 @@ const CartScreen = () => {
                       className='selectForm form-select'
                       as='select'
                       value={item.quantity}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         dispatch(
-                          addToCart(item.product, Number(e.target.value))
+                          replaceInCart(item.product, Number(e.target.value))
                         )
+                      }
                       }
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (

@@ -15,8 +15,9 @@ import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
 
 const ProductScreen = () => {
   const [quantity, setQuantity] = useState(1)
-  const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
+  const [rating, setRating] = useState(0)
+  const [curr, setCurr] = useState(0)
 
   const params = useParams()
   const dispatch = useDispatch()
@@ -32,6 +33,16 @@ const ProductScreen = () => {
   const { success: successReviewProduct, error: errorReviewProduct } =
     productCreateReview
 
+  const cart = useSelector(state => state.cart)
+  const { cartItems } = cart
+
+  let index
+  for (let i = 0; i < cartItems.length; i++) {
+    if (cartItems[i] && cartItems[i].product === product._id)
+      index = i
+  }
+  console.log("Prod: ", cartItems[index])
+
   useEffect(() => {
     if (successReviewProduct) {
       alert('Your review has been submitted!')
@@ -42,8 +53,8 @@ const ProductScreen = () => {
     dispatch(listProductDetails(params.id))
   }, [dispatch, params, successReviewProduct])
 
-  const addToCartHandler = () => {
-    dispatch(addToCart(product._id, quantity))
+  const AddToCartHandler = () => {
+    dispatch(addToCart(product._id, Number(quantity)))
     navigate(`/cart/`)
   }
 
@@ -74,9 +85,9 @@ const ProductScreen = () => {
                   <h2>{product.name}</h2>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  {product.rating && (
+                  {(
                     <Rating
-                      value={product.rating}
+                      value={product.rating > 0 ? product.rating : 0}
                       text={
                         product.numReviews === 1
                           ? `${product.numReviews} review`
@@ -120,7 +131,9 @@ const ProductScreen = () => {
                             className='form-select'
                             as='select'
                             value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)}
+                            onChange={(e) => {
+                              setQuantity(e.target.value)
+                            }}
                             aria-label='8'
                           >
                             {[...Array(product.countInStock).keys()].map(
@@ -135,10 +148,9 @@ const ProductScreen = () => {
                       </Row>
                     </ListGroup.Item>
                   )}
-
                   <ListGroup.Item>
                     <Button
-                      onClick={addToCartHandler}
+                      onClick={AddToCartHandler}
                       className='btn-block'
                       type='button'
                       disabled={product.countInStock === 0}
@@ -148,6 +160,7 @@ const ProductScreen = () => {
                   </ListGroup.Item>
                 </ListGroup>
               </Card>
+              
             </Col>
           </Row>
           <Row>
