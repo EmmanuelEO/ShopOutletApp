@@ -24,20 +24,28 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
-app.get('/', (req, res) => {
-  res.send('API is running....')
-})
-
 app.use('/api/products', productRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/upload', uploadRoutes)
 
-app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+app.get('/api/config/paypal', (req, res) =>
+  res.send(process.env.PAYPAL_CLIENT_ID)
+)
 
 // Since __dirname is not available using common JS, we can create a variable to represent it using path.resolve()
 const folder = path.resolve()
-app.use('/uploadedImages', express.static(path.join(folder, '/uploadedImages')))
+app.use('/frontend/public/images', express.static(path.join(folder, '/frontend/public/images')))
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(folder, '/frontend/build')))
+
+  app.get('*', (req, res) => res.sendFile(path.resolve(folder, 'frontend', 'build', 'index.html')))
+} else {
+  app.get('/', (req, res) => {
+    res.send('API is running....')
+  })
+}
 
 app.use(notFound)
 // Handling errors that are not directly casted to be object IDs

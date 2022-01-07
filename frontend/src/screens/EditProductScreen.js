@@ -70,8 +70,9 @@ const EditProductScreen = () => {
         },
       }
 
-      const { data } = await axios.post('/api/upload', formData, config)
+      let { data } = await axios.post('/api/upload', formData, config)
 
+      data = data.slice(16);
       setImage(data)
       setUploading(false)
     } catch (error) {

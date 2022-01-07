@@ -5,8 +5,27 @@ import Product from '../models/productModel.js'
 // @route: GET request to /api/products
 // @access: Public
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({})
-  res.json(products)
+  // req.query is how to get query strings like keyword from ?item=keyword
+  const pageSize = 10
+  // If the pageNumber is not included, then we're on page 1
+  const page = Number(req.query.pageNumber) || 1
+
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          // $options: i specifies case insensitiveness
+          $options: 'i',
+        },
+      }
+    : {}
+
+  const count = await Product.count({ ...keyword })
+  const products = await Product.find({ ...keyword })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+
+  res.json({ products, page, pages: Math.ceil(count / pageSize) })
 })
 
 // @desc: Fetch single product
@@ -67,7 +86,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
   const product = await Product.findById(req.params.id)
 
-  if(product) {
+  if (product) {
     product.name = req.body.name
     product.price = req.body.price
     product.description = req.body.description
@@ -92,8 +111,10 @@ const createProductReview = asyncHandler(async (req, res) => {
 
   const product = await Product.findById(req.params.id)
 
-  if(product) {
-    const hasBeenReviewed = product.reviews.find(review => review.user.toString() === req.user._id.toString())
+  if (product) {
+    const hasBeenReviewed = product.reviews.find(
+      (review) => review.user.toString() === req.user._id.toString()
+    )
 
     if (hasBeenReviewed) {
       // Status of Bad Request
@@ -105,14 +126,16 @@ const createProductReview = asyncHandler(async (req, res) => {
       name: req.user.name,
       rating: Number(rating),
       comment,
-      user: req.user._id
+      user: req.user._id,
     }
 
     product.reviews.push(review)
 
     product.numReviews = product.reviews.length
 
-    product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.numReviews
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      product.numReviews
 
     await product.save()
 
@@ -123,11 +146,20 @@ const createProductReview = asyncHandler(async (req, res) => {
   }
 })
 
+// @desc: Get top rated products
+// @route: POST request to /api/products/top
+// @access: Public
+const getTopProducts = asyncHandler(async (req, res) => {
+  const products = await Product.find({}).sort({ rating: -1 }).limit(4)
+  res.json(products)
+})
+
 export {
   getProducts,
   getProductByID,
   deleteProduct,
   createProduct,
   updateProduct,
-  createProductReview
+  createProductReview,
+  getTopProducts,
 }
