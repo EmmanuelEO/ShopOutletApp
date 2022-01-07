@@ -12,7 +12,6 @@ import {
 } from '../actions/productActions'
 import { addToCart } from '../actions/cartActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
-import { LinkContainer } from 'react-router-bootstrap'
 
 const ProductScreen = () => {
   const [quantity, setQuantity] = useState(1)
