@@ -17,7 +17,6 @@ const ProductScreen = () => {
   const [quantity, setQuantity] = useState(1)
   const [comment, setComment] = useState('')
   const [rating, setRating] = useState(0)
-  const [curr, setCurr] = useState(0)
 
   const params = useParams()
   const dispatch = useDispatch()

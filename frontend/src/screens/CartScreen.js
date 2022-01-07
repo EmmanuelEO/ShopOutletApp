@@ -11,7 +11,7 @@ import {
   Card,
 } from 'react-bootstrap'
 import Message from '../components/Message'
-import { addToCart, removeFromCart, replaceInCart } from '../actions/cartActions'
+import { removeFromCart, replaceInCart } from '../actions/cartActions'
 import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 const CartScreen = () => {
