@@ -45,6 +45,7 @@ const AllProductsScreen = () => {
   const deleteHandler = (id, name) => {
     if (window.confirm(`Are your sure you want to delete ${name} from the list of the products?`)) {
       dispatch(deleteProduct(id))
+      navigate('/admin/allproducts')
     }
   }
 

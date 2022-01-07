@@ -6,7 +6,7 @@ import Product from '../models/productModel.js'
 // @access: Public
 const getProducts = asyncHandler(async (req, res) => {
   // req.query is how to get query strings like keyword from ?item=keyword
-  const pageSize = 10
+  const pageSize = 8
   // If the pageNumber is not included, then we're on page 1
   const page = Number(req.query.pageNumber) || 1
 

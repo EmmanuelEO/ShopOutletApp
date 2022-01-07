@@ -20,9 +20,6 @@ const CartScreen = () => {
   const cart = useSelector((state) => state.cart)
   const { cartItems } = cart
 
-  const userLogin = useSelector(state => state.userLogin)
-  const { userInfo } = userLogin
-
   const navigate = useNavigate()
 
   const removeFromCartHandler = (id) => {
@@ -30,11 +27,7 @@ const CartScreen = () => {
   }
 
   const checkoutHandler = () => {
-    if (!userInfo) {
-      navigate('/login')
-    } else {
-      navigate('/shipping')
-    }
+    navigate('/login?redirect=shipping')
   }
 
   useEffect(() => {
@@ -63,7 +56,7 @@ const CartScreen = () => {
                   <Col md={3}>${item.price}</Col>
                   <Col md={2}>
                     <Form.Control
-                      className='form-select'
+                      className='selectForm form-select'
                       as='select'
                       value={item.quantity}
                       onChange={(e) =>
